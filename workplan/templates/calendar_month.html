@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load i18n calendarium_tags %}
+
+{% block content %}
+<script>
+function AppendDate(date, obj, day){
+	
+	if (obj.is(':checked')) {
+       if(day<5){opt=1;alert("You are changing date to working day");}
+       else{opt=0;alert("You are changing date to working day");}
+       
+    } else {
+      opt=0;alert("You are changing date to non working day");
+    }
+    $.ajax({
+    url: '/hday/',
+    type: 'POST', 
+    data: {'date': date, 'opt':opt,csrfmiddlewaretoken: '{{ csrf_token }}'},
+    success: function(data) {
+    }
+}); 
+	}
+</script>
+<div class="mid-body container">
+
+    <div class="col-lg-12">
+
+<h1>{{ date|date:"F Y" }}</h1>
+<form action="." method="post">
+    {% csrf_token %}
+    <input class="btn btn-default" type="submit" name="previous" value="{% trans "Previous" %}" />
+    <input class="btn btn-default" type="submit" name="next" value="{% trans "Next" %}" />
+    <input class="btn btn-default" type="submit" name="today" value="{% trans "Today" %}" />
+    {% if request.user.is_staff %}
+        <a href="{% url "calendar_event_create" %}">{% trans "Create new event" %}</a>
+    {% endif %}
+</form>
+<table class="table" id="calendar-month">
+    <tr>
+        {% for weekday in weekdays %}
+            <th>{{ weekday }}</th>
+        {% endfor %}
+    </tr>
+    {% for week in month %}
+        {% if week %}
+            <tr>
+                {% for day, current, days, tdate, hday in week %}
+                    <td class="{% if day == 0  %}calendarium-empty{% elif days > 4 %}calendarium-disabled{% elif current %}calendarium-current{% else %}calendarium-day{% endif %}">
+                        <div class="calendarium-relative">
+                            {% if day != 0 %}
+                                <span class="calendarium-date">{{ day }}<input type="checkbox" value="{{tdate}}" id="{{tdate|date:'Y-m-d'}}" {% if hday %}checked{% endif %} onclick="AppendDate('{{tdate|date:'Y-m-d'}}', $(this), '{{days}}')"></span>
+                            {% endif %}
+                        </div>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endif %}
+    {% endfor %}
+</table>
+
+</div>
+<p>All checked days are working day and unchecked days are non-working day</p>
+</div>
+{% endblock %}

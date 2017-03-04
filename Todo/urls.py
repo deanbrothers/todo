@@ -21,4 +21,14 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', Index.as_view()),
     url(r'^workplan/', Workplan.as_view()),
+    #url(r'^calendar/', include('calendarium.urls')),
+    # calendar views
+    url(r'^(?P<year>\d+)/(?P<month>\d+)/$',
+        MonthView.as_view(),
+        name='calendar_month'),
+
+    url(r'^calendar/$',
+        CalendariumRedirectView.as_view(),
+        name='calendar_current_month'),
+    url(r'^hday/', holiday),
 ]

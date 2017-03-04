@@ -26,6 +26,7 @@ SECRET_KEY = '@yszsfa4y8a0q@#ml4dchk6!$k@2_w!3t!tdym6_gmt2f5yfgt'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+SHIFT_WEEKSTART = getattr(settings, 'CALENDARIUM_SHIFT_WEEKSTART', 0)
 
 
 # Application definition
@@ -38,6 +39,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'workplan',
+    'filer',
+    'mptt',
+    'easy_thumbnails',
+    'calendarium',
 )
 
 MIDDLEWARE_CLASSES = (
